@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bdqn.dao.PaperMapper">
+
+	<select id="getCount" resultType="int">
+		select count(*) from t_paper paper where 1=1
+
+		<if test="title!=''">
+			and paper.title like '%${title}%'
+		</if>
+		<if test="type!=0">
+			and paper.type = #{type}
+		</if>
+	</select>
+
+	<select id="list" resultType="java.util.HashMap">
+		select paper.id as id,paper.title as title,paper.createdBy as
+		createdBy,code.codeName as codeName,paper.creationDate as
+		creationDate,paper.modifyDate as modifyDate from t_paper paper left
+		join t_code code on paper.type=code.id where 1=1
+		<if test="title!=''">
+			and paper.title like '%${title}%'
+		</if>
+		<if test="type!=0">
+			and paper.type = #{type}
+		</if>
+		order by creationDate desc limit #{pageNum},4
+	</select>
+	
+	<select id="get" resultType="java.util.HashMap">
+		select paper.id as id,paper.title as title,paper.type as type,paper.paperSummary as paperSummary,paper.fileName as fileName from t_paper paper left
+		join t_code code on paper.type=code.id where paper.id=#{id}
+	</select>
+
+	<select id="hasTitle" resultType="int">
+		select count(*) from t_paper
+		where title = '${title}'
+	</select>
+
+	<insert id="add">
+		insert into t_paper(title,type,paperSummary,paperPath,createdBy,
+		creationDate,modifyDate,modifyBy,fileName)
+		values(#{title},#{type},#{paperSummary},#{paperPath},
+		#{createdBy},now(),now(),#{modifyBy},#{fileName})
+	</insert>
+
+	<delete id="delete">
+		delete from t_paper where id = ${id}
+	</delete>
+
+
+</mapper>

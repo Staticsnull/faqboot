@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery.min.js"></script>
+    <script type="application/javascript">
+        $(function () {
+            $('#searchBtn').click(function () {
+                var keyword = $('#keyword').val();
+                window.location.href = "/listFaqs?keyword=" + keyword;
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+<h1 style="text-align: center;">常见问题检索</h1>
+
+<div align="left">
+    请输入查询关键字:<input type="text" id="keyword" th:value="${result.keyword}" size="20">
+    <button id="searchBtn">查询</button>
+    <a href="/toAddFaqs">添加常见问题</a>
+</div>
+<table border="1" cellspacing="0" style="text-align: center;width:100%">
+    <p>
+        <td colspan="5" height="50px;" style="text-align: center;">
+            <font size="5">检索结果</font>
+
+    <p>
+    <p th:if="${result.list.size() lt 1}"
+       th:text=" '没有找到和'+${result.keyword }+'相关的内容'">
+    </p>
+    <p th:if="${result.list.size() lt 1}">
+        请修改关键字后重试
+    </p>
+
+    </p>
+
+    </td>
+    </p>
+    <th:block th:if="${not #lists.isEmpty(result.list)}">
+        <tr style="background: #ffffff;">
+            <th>编号</th>
+            <th>标题</th>
+            <th>分类</th>
+            <th>创建时间</th>
+        </tr>
+        <th:block th:each="gs,st:${result.list}">
+            <tr th:style="'background:' +@{(${st.index%2==0}  ? 'gray;':'')}+''">
+                <td th:text="${gs.id}"></td>
+                <td><a href="#"
+                       th:href="@{'/toShowFaq?id='+${gs.id}}"
+                       th:text="${gs.title}"></a></td>
+                <td th:text="${gs.type}"></td>
+                <td th:text="${#calendars.format(gs.createdate,'yyyy-MM-dd hh:mm')}"></td>
+            </tr>
+        </th:block>
+        <tr>
+            <td colspan="5">
+
+                <div style="float: right;">
+                    <table>
+                        <tr>
+                            <td><a href="faqsList.html"
+                                   th:href="@{'/listFaqs?pageIndex=1&keyword='+${result.keyword}}">首页</a></td>
+                            <td><a href="faqsList.html"
+                                   th:href="@{'/listFaqs?pageIndex='+(${result.pageIndex}-1)+'&keyword='+${result.keyword}}">上页</a>
+                            </td>
+                            <td><!--<a href="faqsList.html"
+                                   th:href="@{'/listFaqs?pageIndex='+(((${result.pageIndex}+1) eq ${result.pageCount})?${result.pageIndex}:(${result.pageIndex}+1))+'&keyword='+${result.keyword}}">下页</a>-->
+                                <a href="faqsList.html"
+                                   th:href="@{/listFaqs(pageIndex=(${result.pageIndex} eq ${result.pageCount})?${result.pageIndex}:(${result.pageIndex}+1),keyword=${result.keyword})}">下页</a>
+                            </td>
+                            <td><a href="faqsList.html"
+                                   th:href="@{'/listFaqs?pageIndex='+${result.pageCount}+'&keyword='+${result.keyword}}">末页</a>
+                            </td>
+                            <td th:text="'第'+${result.pageIndex }+'页/共'+${result.pageCount }+'页'"></td>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </th:block>
+</table>
+
+</body>
+</html>

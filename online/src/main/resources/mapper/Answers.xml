@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="cn.bdqn.dao.AnswerMapper">
+	<select id="getAnswerListByPid" parameterType="String" resultType="answers">
+		select a.* from answers a
+		join questions q on a.qid=q.id
+		where a.qid = #{qid}
+	</select>
+	<insert id="saveAnswers" parameterType="answers">
+		insert into answers values(null,
+			#{ansContent},#{ansDate},#{qid})
+	</insert>
+
+
+	</mapper>

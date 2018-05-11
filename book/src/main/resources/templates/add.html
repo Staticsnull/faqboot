@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+        function goBack(){
+            window.history.go(-1);  //返回上一页
+        }
+        var DATE_FORMAT = /^[0-9]{4}-[0-1]?[0-9]{1}-[0-3]?[0-9]{1}$/;
+        function checkInput() {
+            var name = $('#name').val();
+            var author = $('#author').val();
+            var publish = $('#publish').val();
+            var publishdate = $('#publishdate').val();
+            //console.log(title);
+            if(''==name){
+                alert('书名不能为空!');
+                return false;
+            }
+            if(''==author){
+                alert('作者不能为空!');
+                return false;
+            }
+            if(''==publish){
+                alert('出版社不能为空!');
+                return false;
+            }
+            if(!DATE_FORMAT.test(publishdate)){
+                alert('时间格式有误,请输入正确的格式:yyyy-MM-dd!');
+               return false;
+            }
+            $('#addForm').attr("action","/add");
+            $('#addForm').submit();
+            return false;
+        }
+
+    </script>
+</head>
+<body>
+<form id="addForm" method="post">
+    <table  style="text-align: center;margin:auto;">
+
+        <tr>
+            <td colspan="2">
+                <font size="5">增加图书</font>
+            </td>
+        </tr>
+        <tr>
+            <td>书名：</td>
+            <td style="text-align: left;"><input type="text" id="name" name="name"/></td>
+        </tr>
+        <tr>
+            <td>作者：</td>
+            <td style="text-align: left;"><input type="text" id="author" name="author"/></td>
+        </tr>
+        <tr>
+            <td>出版社：</td>
+            <td style="text-align: left;"><input type="text" id="publish" name="publish"/></td>
+        </tr>
+        <tr>
+            <td>上传时间</td>
+            <td><input type="datetime" name="publishdate" id="publishdate">
+            </td>
+        </tr>
+        <tr>
+            <td>页数：</td>
+            <td style="text-align: left;"><input type="text" id="page" name="page"/></td>
+        </tr>
+        <tr>
+            <td>价格：</td>
+            <td style="text-align: left;"><input type="text" id="price" name="price"/></td>
+        </tr>
+        <tr>
+            <td>内容摘要：</td>
+            <td style="text-align: left;">
+                <textarea rows="8" cols="15" id="content" name="content"></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" value="提交" onclick="checkInput();">
+                <input type="button" value="返回" onclick="goBack();">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

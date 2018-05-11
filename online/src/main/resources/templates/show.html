@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <form action="/findQuestion" method="post">
+        <input type="hidden" name="id" th:value="${question.id }">
+        问题:<font th:text="${question.title }"> </font><br>
+        问题描述:<font th:text="${question.detailDesc}"> </font><br>
+        网友回答:
+        <th:block th:each="answer:${answers}">
+        <div>
+            <span th:text="${#calendars.format(answer.ansDate,'yyyy-MM-dd hh:mm:ss')}">
+            </span><br>
+            <span th:text="${answer.ansContent }"></span><br>
+        </div>
+        </th:block>
+        <br>
+        我来回答:<textarea rows="10" cols="40" name="ansContent"></textarea>	<br>
+
+        <input type="submit" value="提交答案"> <a href="/list">返回首页</a>
+    </form>
+</div>
+</body>
+</html>

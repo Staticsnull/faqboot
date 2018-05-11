@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <style type="text/css">
+        table tr:nth-child(odd){background:gray;}
+        table td:nth-child(even){color:#C00;}
+        table tr:nth-child(3){background:gray;}
+    </style>
+    <script type="application/javascript" src="/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+        $(document).ready(function () {
+            getFaqsList();
+            $("#pageId").on('click', '.pre,.next', jumpToPage);
+            $("#searchBtn").on("click", getFaqsList);
+        });
+
+        function getFaqsList() {
+            var url = "/faqsList";
+            var keyword = $("#keyword").val();
+            var pageIndex = $("#pageId").data("pageIndex");
+            if (pageIndex) {//true
+                pageIndex = pageIndex;
+            } else {
+                pageIndex = 1;
+            }
+            var params = {
+                "keyword": keyword,
+                "pageIndex": pageIndex
+            };
+            $.get(url, params, function (result) {
+                setTableRows(result.list);
+                //绑定当前页面
+                $("#pageId").data("pageIndex", result.pageIndex);
+                //绑定总页数
+                $("#pageId").data("pageCount", result.pageCount);
+                $(".pageObject").html("第" + result.pageIndex + "页/共" + result.pageCount + "页");
+            });
+
+        }
+
+
+        function setTableRows(result) {
+            //获取tbody对象
+            var tBody = $("#tbodyId");
+            //清空tbody内容
+            tBody.empty();
+            for (var i in result) {
+                //创建tr对象
+                var tr = $("<tr></tr>");
+                tr.append("<td>" + result[i].id + "</td>");
+                tr.append("<td> <a href=/toShowFaq?id="
+                    + result[i].id + " >" + result[i].title
+                    + "</a></td>");
+                tr.append("<td>" + result[i].type + "</td>");
+                //var date = new Date(result[i].createdate);
+                tr.append("<td>" + result[i].createdate + "</td>");
+                tr.append("<td> <a href='#' onclick='deleteFaqs("
+                    + result[i].id + ")' >删除</a> <a href=/toUpdate?id="
+                    + result[i].id + " >修改</a></td>");
+                tBody.append(tr);
+            }
+        }
+        function deleteFaqs(id) {
+             //var obj = $(id).val();
+            var flag = window.confirm("确定删除吗?");
+            if(flag){
+                /*$.ajax({
+                    type:"get",
+                    url:"/deleteFaqs?id="+obj,
+                    dataType:"json",
+                    success:function (result) {
+                        console.log(1);
+                        if(result.OK){
+                            alert("删除成功");
+                            getFaqsList();
+                        }
+
+                    },
+                    error : function() {
+                        alert("异常！");
+                    }
+                });*/
+                var url = "/deleteFaqs";
+                var params = {
+                    "id":id
+                };
+                //调用$.get时,json字符串必须是map格式的
+                $.get(url,params,function(result) {
+                    //console.log((JSON.stringify(result)).OK);
+                    if(result.OK){
+                        alert("删除成功!");
+                        getFaqsList();
+                    }
+                });
+            }
+            return false;
+        }
+
+        function jumpToPage() {
+            //获得点击对象上class属性对应的值
+            var clazz = $(this).attr("class");
+            //获得pageId对象上绑定的pageIndex对应的值
+            var pageIndex = $('#pageId').data("pageIndex");
+            //获得pageId对象上绑定的pageCount对应的值
+            var pageCount = $('#pageId').data("pageCount")
+            //判断点击的是否是上一页
+            if (clazz == 'pre' && pageIndex > 1) {
+                pageIndex--;
+            }
+            //判断点击的是否是下一页
+            if (clazz == "next" && pageIndex < pageCount) {
+                pageIndex++;
+            }
+            //重写绑定pageIndex的值,
+            $('#pageId').data("pageIndex", pageIndex);
+            //重新执行查询操作
+            getFaqsList();
+        }
+
+    </script>
+</head>
+<body>
+<h1 style="text-align: center;">常见问题检索</h1>
+
+<div align="left">
+    请输入查询关键字:<input type="text" id="keyword" size="20">
+    <button id="searchBtn">查询</button>
+    <a href="/toAddFaqs">添加常见问题</a>
+</div>
+<table border="1" cellspacing="0" style="text-align: center;width:100%">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>标题</th>
+        <th>分类</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody id="tbodyId">
+
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="5">
+
+            <div style="float: right;">
+                <table>
+                    <tr id="pageId">
+                        <td><a href="#" class="pre">上一页</a></td>
+                        <td><a href="#" class="next">下一页</a></td>
+                        <td class="pageObject"></td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+</body>
+</html>

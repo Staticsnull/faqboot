@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+        function goBack(){
+            window.history.go(-1);  //返回上一页
+        }
+        var DATE_FORMAT = /^[0-9]{4}-[0-1]?[0-9]{1}-[0-3]?[0-9]{1}$/;
+        function checkInput() {
+            var name = $('#name').val();
+            var author = $('#author').val();
+            var publish = $('#publish').val();
+            var publishdate = $('#publishdate').val();
+            //console.log(title);
+            if(''==name){
+                alert('书名不能为空!');
+                return false;
+            }
+            if(''==author){
+                alert('作者不能为空!');
+                return false;
+            }
+            if(''==publish){
+                alert('出版社不能为空!');
+                return false;
+            }
+            if(!DATE_FORMAT.test(publishdate)){
+                alert('时间格式有误,请输入正确的格式:yyyy-MM-dd!');
+               return false;
+            }
+            $('#addForm').attr("action","/add");
+            $('#addForm').submit();
+            return false;
+        }
+
+    </script>
+</head>
+<body>
+<div>
+    <h1>我要提问</h1>
+    <h2><a href="/list">返回首页</a></h2>
+    <form action="/saveQuestion" method="post">
+        问题:<input type="text" name="title"><br>
+        问题描述:<br>
+        <textarea rows="10" cols="40" name="detailDesc"></textarea><br>
+        <input type="submit" value="保存问题">
+
+    </form>
+</div>
+</body>
+</html>

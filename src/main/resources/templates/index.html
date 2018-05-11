@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+
+        $(function () {
+            $.ajax({
+                type:"get",
+                url:"/listUI",
+                success:function(data){
+                    for(var i in data){
+                        $('#userId').text(data[i].id);
+                        $('#username').html(data[i].username);
+                        $('#password').html(data[i].password);
+                    }
+                }
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+    <h1 th:text="${name}">Hello </h1>
+    <a href="/listUI">测试json数据</a><br>
+    <p id="userId"></p>
+    <p id="username"></p>
+    <p id="password"></p>
+
+ <div>
+    <div><p>新闻列表</p></div>
+
+    <table>
+
+        <tr>
+
+            <td>新闻编号</td>
+            <td>新闻标题</td>
+            <td>新闻摘要</td>
+            <td>作者</td>
+            <td>创建时间</td>
+            <td>操作</td>
+
+        </tr>
+        <tr class="bg" th:each="user,index:${list}">
+
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.password}"></td>
+           <!-- <td><a href="#"
+                   th:href="@{/news/toComment(id=${user.id})}">
+                评论</a>
+                <a href="#" th:value="${user.id}"
+                   onclick="deleteNews(this)">删除</a></td>
+-->
+        </tr>
+
+
+
+
+    </table>
+
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery.min.js"></script>
+    <script type="application/javascript">
+        /*function toAdd() {
+            window.location.href="/toAdd";
+        }
+        function toDelete(id) {
+            var isDelete = window.confirm("确认删除吗?");
+            if (isDelete){
+                var url = "/toDelete?id="+id;
+                $.get(url,function(result) {
+                    if(result.OK){
+                        alert("删除成功!");
+                        window.location.href="/list";
+                    }
+                });
+            }
+            return false;
+        }*/
+    </script>
+</head>
+<body>
+<div>
+    <h1>在线问答</h1>
+    <h2><a href="/question">我要提问</a></h2>
+    <table border="1"  >
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>问题</th>
+            <th>回答次数</th>
+            <th>最后修改</th>
+        </tr>
+        </thead>
+        <tbody >
+        <th:block th:each="q,st:${list}">
+            <tr th:style="'background:' +@{(${st.index%2==0}  ? 'gray;':'')}+''">
+                <td th:text="${q.id}"></td>
+                <td><a href="#"
+                        th:href="@{/findQuestion(id=${q.id})}" th:text="${q.title }"></a>
+                </td>
+                <td th:text="${q.answerCount }"></td>
+                <td th:text="${#calendars.format(q.lastModified,'yyyy-MM-dd hh:mm:ss')}">
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

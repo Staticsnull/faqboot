@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+        function goBack(){
+            window.history.go(-1);  //返回上一页
+        }
+
+    </script>
+</head>
+<body>
+<form action="/addFaq" method="post">
+    <input type="hidden" name="id" th:value="${result.id}">
+    <table  style="text-align: center;margin:auto;">
+        <tr>
+            <td colspan="2">
+                常见问题描述
+            </td>
+        </tr>
+        <tr>
+            <td>分类：</td>
+            <td style="text-align: left;">
+                <select id="classesSelect" r name="classid">
+                    <option th:value="${result.classid}"
+                            th:text="${result.type}"></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>标题：</td>
+            <td style="text-align: left;">
+                <input type="text" id="title" name="title" th:value="${result.title}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>内容：</td>
+            <td style="text-align: left;">
+                <textarea rows="8" cols="15" id="content"
+                          name="content" th:text="${result.content}">
+
+                </textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input id="submit" type="submit" value="保存">
+                <input type="reset" value="重置" >
+                <input type="button" value="返回" onclick="goBack();">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>测试转发html</title>
+    <script type="application/javascript" src="/jquery.min.js"></script>
+    <script type="application/javascript">
+        function toAdd() {
+            window.location.href="/toAdd";
+        }
+        function toDelete(id) {
+            var isDelete = window.confirm("确认删除吗?");
+            if (isDelete){
+                var url = "/toDelete?id="+id;
+                $.get(url,function(result) {
+                    if(result.OK){
+                        alert("删除成功!");
+                        window.location.href="/list";
+                    }
+                });
+            }
+            return false;
+        }
+    </script>
+</head>
+<body>
+<h1 style="text-align: center;" th:if="${session.user.usertype}==1" >图书管理员,欢迎您</h1>
+<h1 style="text-align: center;" th:if="${session.user.usertype}==0" >普通用户,欢迎您</h1>
+
+<table border="1" cellspacing="0" style="text-align: center;width:100%">
+
+    <td colspan="8" height="50px;" style="text-align: center;">
+
+    <p >
+        图书详细信息列表
+    </p>
+
+    </td>
+    <th:block th:if="${not #lists.isEmpty(result.list)}">
+        <tr style="background: #ffffff;">
+            <th>书名</th>
+            <th>作者</th>
+            <th>出版社</th>
+            <th>出版日期</th>
+            <th>页数</th>
+            <th>价格</th>
+            <th>内容摘要</th>
+            <th>操作</th>
+        </tr>
+        <th:block th:each="gs,st:${result.list}">
+            <tr th:style="'background:' +@{(${st.index%2==0}  ? 'gray;':'')}+''">
+                <td th:text="${gs.name}"></td>
+                <td th:text="${gs.author}"></td>
+                <td th:text="${gs.publish}"></td>
+                <td th:text="${#calendars.format(gs.publishdate,'yyyy-MM-dd hh:mm')}"></td>
+                <td th:text="${gs.page}"></td>
+                <td th:text="${gs.price}"></td>
+                <td th:text="${gs.content}"></td>
+                <td><a href="#"
+                       th:href="@{'/toUpdate?id='+${gs.id}}">修改</a>|
+                    <a href="#"
+                       th:onclick="'toDelete(\''+${gs.id}+'\')'">
+                        删除</a></td>
+
+            </tr>
+        </th:block>
+        <tr>
+            <td colspan="8">
+                <input type="button" onclick="toAdd();" value="增加图书">
+                <div style="float: right;">
+                    <table>
+                        <tr>
+                            <td><a href="#"
+                                   th:href="@{/list(pageIndex=1)}">首页</a></td>
+                            <td><a href="#"
+                                   th:href="@{/list(pageIndex=(${result.pageIndex}-1))}">上页</a>
+                            </td>
+                            <td><!--<a href="faqsList.html"
+                                   th:href="@{'/listFaqs?pageIndex='+(((${result.pageIndex}+1) eq ${result.pageCount})?${result.pageIndex}:(${result.pageIndex}+1))+'&keyword='+${result.keyword}}">下页</a>-->
+                                <a href="#"
+                                   th:href="@{/list(pageIndex=(${result.pageIndex} eq ${result.pageCount})?${result.pageIndex}:(${result.pageIndex}+1))}">下页</a>
+                            </td>
+                            <td><a href="#"
+                                   th:href="@{'/list?pageIndex='+${result.pageCount}}">末页</a>
+                            </td>
+                            <td th:text="'第'+${result.pageIndex }+'页/共'+${result.pageCount }+'页'"></td>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </th:block>
+</table>
+
+</body>
+</html>

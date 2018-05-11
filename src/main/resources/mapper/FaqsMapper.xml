@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="cn.bdqn.dao.FaqsDao">
+	
+		<select id="getCount" resultType="int">
+			select count(*) from faqs
+			
+			<if test="keyword!=null and keyword !=''">
+				where title like CONCAT ('%', #{keyword}, '%')
+			</if>
+		</select>
+		
+		<select id="get" resultType="java.util.HashMap">
+			select f.id as id,f.title as title,f.classid as classid,
+			f.content as content,f.createdate as createdate,c.cname as type
+			from faqs f left join classes c 
+			on f.classid = c.id where f.id = #{id}
+		</select>
+	
+		<select id="list" resultType="java.util.HashMap">
+			select f.id as id,f.title as title,f.content as content,
+			f.createdate as createdate,c.cname as type
+			from faqs f left join classes c 
+			on f.classid = c.id
+			<if test="keyword!=null and keyword !=''">
+				where title like CONCAT ('%', #{keyword}, '%')
+			</if>
+			
+			order by createdate desc limit #{pageIndex},4 
+		</select>
+		
+		<update id="add">
+			insert into faqs(classid,title,content,createdate) 
+			values(#{classid},#{title},#{content},now())
+		</update>
+		<delete id="deleteFaqs" parameterType="int">
+			delete from faqs where id = #{id}
+		</delete>
+	
+	</mapper>
